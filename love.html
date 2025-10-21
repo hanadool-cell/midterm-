@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Bouquet - 사랑의 꽃 선택</title>
+
+    <link rel="stylesheet" href="https://use.typekit.net/bno4gef.css">
+
+    <style>
+        /* --- 기본 스타일 --- */
+        body {
+            background-image: url('gridback.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white;
+            height: 100vh;
+            margin: 0;
+            font-family: "pretendard", sans-serif;
+            font-weight: 500;
+            font-style: normal;
+            overflow: hidden;
+            position: relative; /* 자식 absolute 요소 기준 */
+        }
+
+       
+
+        /* --- 1. 헤더 영역 (좌측 상단 고정) --- */
+        #header-area {
+            background-color: transparent;
+            width: 45vw; /* 좌측 영역 너비 */
+            height: 100vh; /* 화면 전체 높이 */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* 위에서부터 배치 */
+            align-items: flex-start; /* 왼쪽 정렬 */
+            position: absolute; /* 절대 위치 */
+            top: 0;
+            left: 0;
+            padding: 3vh 5vh; /* 패딩 */
+            text-align: left; /* 왼쪽 정렬 */
+            z-index: 10;
+        }
+
+       
+         #header-area::after {
+             display: none;
+         }
+
+
+        #header-area h1 {
+            font-size: 3vw;
+            color: white;
+            margin-top: 5vh;
+            margin-bottom: 1.5vw;
+            position: relative; /* z-index 위해 */
+            z-index: 2;
+            font-weight: 400;
+            letter-spacing: -0.01vw;
+            line-height: 1.1;
+            text-shadow: #00000043 0 0 0.5vw;
+        }
+
+        #header-area h1 .special-font { /* (LOVE) */
+            font-family: "argent-pixel-cf", sans-serif;
+            font-weight: 500;
+            font-style: italic;
+            letter-spacing: -0.2vw;
+            font-size: 3.5vw;
+            background: linear-gradient(to right, #cdff45, #5efffc); /* 카드 제목 호버와 동일한 그라데이션 */
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent; /* 텍스트 색상을 투명하게 */
+            text-shadow: none; /* 그림자 제거 */
+            
+        }
+        #header-area h1 .special-font2 { /* 괄호 */
+             font-family: "pretendard", sans-serif;
+             font-weight: 300;
+             font-style: italic;
+             letter-spacing: 0vw;
+             font-size: 3.2vw;
+             
+         }
+
+        #header-area p {
+            font-size: 1.3vw;
+            color: rgba(255, 255, 255, 0.8);
+            margin: 0 0 4vh 0;
+            position: relative; /* z-index 위해 */
+            z-index: 11;
+            opacity: 0.8;
+            font-weight: 300;
+            letter-spacing: 0.7px;
+            line-height: 1.5;
+        }
+
+        /* **[삭제]** 선택된 꽃 표시 영역 제거 */
+        /* #selected-flowers-display { ... } */
+        /* .selected-flower-item { ... } */
+        /* .selected-flower-img { ... } */
+        /* .selected-flower-name-box { ... } */
+
+
+        /* --- 2. 꽃 선택 영역 (오른쪽 고정) --- */
+        #flower-selection-area {
+            position: absolute; /* 절대 위치 */
+            right: 0;
+            top: 0; /* 화면 상단에 붙임 */
+            width: 60vw; /* 우측 영역 너비 */
+            height: 100vh; /* 화면 전체 높이 */
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 0;
+            box-sizing: border-box;
+            overflow: hidden;
+            z-index: 5;
+        }
+
+        /* --- 꽃 카드 스타일 --- */
+        .flower-card {
+            box-sizing: border-box;
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 0.6vw; 
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            user-select: none;
+            overflow: hidden;
+            position: relative;
+            transition: border-color 0.3s ease-out; /* **[수정]** 배경색 전환 제거 */
+        }
+
+        
+        .flower-card:hover {
+            
+            z-index: 6;
+        }
+
+        /* 선택된 카드 스타일 */
+        .flower-card.selected {
+            border-color: #cdff45;
+            
+        }
+
+        /*  호버 그라데이션 + 노이즈 */
+        .flower-card::after {
+            content: "";                  /* 가상 요소 생성 필수 */
+            position: absolute;           /* 카드 기준으로 위치 지정 */
+            bottom: 0;                    /* 아래쪽에서 시작 */
+            left: 0;
+            width: 100%;                  /* 카드 너비만큼 */
+            height: 0;                    /* 초기 높이 0 (숨김) */
+            /* 배경: 그라데이션 + 노이즈 */
+            background-image:
+                linear-gradient(to top, #597900, rgba(0, 128, 126, 0.545),rgba(232, 148, 255, 0.391), rgba(176, 255, 65, 0)), /* 그라데이션 */
+                url('noise.png');       /* 노이즈 이미지 (경로 확인!) */
+            background-size: 100% 100%, 100px 100px; /* 그라데이션은 꽉 채우고, 노이즈는 반복 패턴 크기 지정 */
+            background-position: center, center;
+            background-repeat: no-repeat, repeat; /* 그라데이션 반복 안 함, 노이즈 반복 */
+            /* 노이즈가 그라데이션처럼 사라지도록 마스크 적용 */
+            mask-image: linear-gradient(to top, rgb(0, 0, 0) 0%, rgb(0, 0, 0) 10%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to top, rgb(0, 0, 0) 0%, rgb(0, 0, 0) 10%, transparent 100%);
+            opacity: 0;                   /* 초기에는 투명 */
+            z-index: 1;                   /* 아이콘(0) 위, 텍스트(2) 아래 */
+            transition: height 0.5s ease-out, opacity 0.5s ease-out; /* 부드러운 전환 효과 */
+            pointer-events: none;         /* 마우스 이벤트 통과 */
+        }
+
+        
+        .flower-card:hover::after,
+        .flower-card.selected::after {
+            height: 40%;                  /* 최종 높이 (조절 가능) */
+            opacity: 1;                   /* 최종 불투명도 */
+        }
+
+           .flower-icon {
+            
+            height: 100%;
+            object-fit: cover;
+            object-position: center top; /* **[수정]** 상단 중앙 정렬 */
+            margin-bottom: 0;
+            transition: transform 0.3s ease-out;
+            position: relative;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            padding-top: 10vw;
+            
+        }
+
+
+        .flower-name {
+            font-size: 1.8vw;
+            color: white;                 /* 기본 색상 흰색 */
+            position: absolute;
+            top: 3vh;                    /* **[수정]** 상단 위치 */
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            z-index: 2;                   /* 그라데이션 위 */
+            text-shadow: 0 0 8px rgba(0,0,0,0.9);
+            font-family: "argent-pixel-cf", sans-serif;
+            font-weight: 400;
+            font-style: italic;
+            opacity: 0;                   /* 기본 숨김 */
+            transition: opacity 0.3s ease-out 0.1s, transform 0.3s ease-out 0.1s, color 0.3s ease-out; /* **[추가]** color 전환 */
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .flower-meaning {
+            font-family: "pretendard", sans-serif;
+            font-size: 0.9vw;
+            color: white;
+            opacity: 0;                   /* 기본 숨김 */
+            position: absolute;
+            bottom: 3vh;                   /* **[수정]** 이름 아래 위치 */
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            width: 80%;
+            z-index: 2;                   /* 그라데이션 위 */
+            transition: opacity 0.3s ease-out 0.2s, transform 0.3s ease-out 0.2s;
+            font-weight: 500;
+            line-height: 1.6;
+            pointer-events: none;
+            text-shadow: 0 0 5px rgba(0,0,0,0.7);
+            text-align: center;
+        }
+
+        /* 호버 시 이름, 꽃말 나타남 & 이미지 확대 */
+        .flower-card:hover {
+            /* background-color 제거 */
+            z-index: 6;
+        }
+        .flower-card:hover .flower-icon {
+            transform: scale(1.1); /* **[수정]** 이미지 확대 강화 */
+        }
+        .flower-card:hover .flower-name,
+        .flower-card:hover .flower-meaning {
+             opacity: 1;
+             transform: translateX(-50%) translateY(0); /* 최종 위치 */
+        }
+        /* **[추가]** 호버 시 꽃 이름 그라데이션 */
+        .flower-card:hover .flower-name {
+            background: linear-gradient(to right, #cdff45, #5efffc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: none; /* 그라데이션 적용 시 그림자 제거 */
+        }
+
+
+        /* 선택 시 호버 효과 유지 */
+        .flower-card.selected {
+            border-color: #cdff45;
+            /* background-color 제거 */
+        }
+        .flower-card.selected .flower-icon {
+             transform: scale(1.1); /* **[수정]** 이미지 확대 강화 */
+        }
+        .flower-card.selected .flower-name,
+        .flower-card.selected .flower-meaning {
+             opacity: 1;
+             transform: translateX(-50%) translateY(0); /* 최종 위치 */
+        }
+        /* **[추가]** 선택 시 꽃 이름 그라데이션 */
+        .flower-card.selected .flower-name {
+            background: linear-gradient(to right, #cdff45, #5efffc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: none;
+        }
+
+        /* --- 버튼 영역 (좌측 하단) --- */
+        #button-area {
+            position: absolute; /* 절대 위치 */
+            left: 3.5vw; /* 헤더 좌측 패딩과 맞춤 */
+            bottom: 6vh;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* 왼쪽 정렬 */
+        }
+
+        #next-button {
+            padding: 1vw 5vw;
+            font-size: 2vw;
+            font-family: "argent-pixel-cf", sans-serif;
+            font-weight: 500;
+            font-style: regular;
+            color: #cdff45;
+            background: rgba(0, 0, 0, 0.434);
+            border: #cdff45 1px solid ; /* **[수정]** 테두리 색상 명시 */
+            cursor: pointer;
+            transition: background 0.3s, color 0.3s; /* **[수정]** color 전환 추가 */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        #next-button:hover {
+             background: #cdff45; /* **[수정]** 호버 배경색 변경 */
+             color: rgb(0, 0, 0); /* **[추가]** 호버 시 텍스트 색상 변경 */
+        }
+
+        #selection-counter {
+            font-size: 1vw;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: 1vh;
+            font-weight: 300;
+            bottom: auto;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="header-area">
+        <h1>CHOOSE FLOWERS THAT CONTAINS YOUR <br><span class="special-font2">( </span><span class="special-font">LOVE</span><span class="special-font2"> ) </span> FOR SOMEONE</h1>
+        <p>꽃이 가진 메세지를 확인하며 상대방에게 전하고 싶은 꽃을 <br>1~4개 골라주세요.</p>
+        </div>
+
+    <div id="flower-selection-area">
+        <div class="flower-card" data-flower="Iris" data-img-src="love/iris.png" data-meaning="좋은 소식, 사랑의 메시지, 변덕스러움">
+            <img src="love/iris.png" alt="붓꽃" class="flower-icon">
+            <span class="flower-name">Iris</span>
+            <span class="flower-meaning">당신에게 제 사랑의 메세지를 보냅니다. <br> (사랑과 우정, 사랑의 메시지, 신의 축복)</span>
+        </div>
+
+        <div class="flower-card" data-flower="Lily" data-img-src="love/lily.png" data-meaning="순결, 깨끗한 사랑, 변함없는 사랑">
+            <img src="love/lily.png" alt="백합" class="flower-icon">
+            <span class="flower-name">Lily</span>
+            <span class="flower-meaning">당신을 변함없이 사랑합니다. <br>(순결, 깨끗한 사랑, 변함없는 사랑)</span>
+        </div>
+
+        <div class="flower-card" data-flower="Myosotis" data-img-src="love/Myosotis.png" data-meaning="나를 잊지 말아요, 진실한 사랑">
+            <img src="love/Myosotis.png" alt="물망초" class="flower-icon">
+            <span class="flower-name">Myosotis</span>
+            <span class="flower-meaning">당신과의 사랑을 오래도록 기억하고 싶어요. <br> (나를 잊지 말아요, 진실한 사랑)</span>
+        </div>
+
+        <div class="flower-card" data-flower="Rose" data-img-src="love/rose.png" data-meaning="정열적인 사랑, 아름다움, 영원한 사랑">
+            <img src="love/rose.png" alt="장미" class="flower-icon">
+            <span class="flower-name">Rose</span>
+            <span class="flower-meaning">당신을 영원히 사랑합니다. <br> (정열적인 사랑, 아름다움, 영원한 사랑)</span>
+        </div>
+    </div>
+
+    <div id="button-area">
+        <div id="selection-counter">0 / 4</div>
+        <button id="next-button">NEXT</button> </div>
+
+    <script>
+      (function(d) {
+        var config = {
+          kitId: 'bno4gef',
+          scriptTimeout: 3000,
+          async: true
+        },
+        h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+      })(document);
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const flowerCards = document.querySelectorAll('.flower-card');
+            const nextButton = document.getElementById('next-button');
+            const counterElement = document.getElementById('selection-counter');
+            /* **[삭제]** const selectedDisplayArea = ... */
+            let selectedFlowersData = [];
+            const maxSelection = 4;
+
+            function updateCounter() {
+                counterElement.textContent = `${selectedFlowersData.length} / ${maxSelection}개 선택됨`;
+            }
+
+            /* **[삭제]** function updateSelectedDisplay() { ... } */
+
+            flowerCards.forEach(card => {
+                card.addEventListener('click', (e) => {
+                    const flowerName = card.getAttribute('data-flower');
+                    const imgSrc = card.getAttribute('data-img-src');
+                    const isSelected = card.classList.contains('selected');
+
+                    if (!isSelected && selectedFlowersData.length < maxSelection) {
+                        card.classList.add('selected');
+                        selectedFlowersData.push({ name: flowerName, imgSrc: imgSrc });
+                    } else if (isSelected) {
+                        card.classList.remove('selected');
+                        selectedFlowersData = selectedFlowersData.filter(flower => flower.name !== flowerName);
+                    } else {
+                        alert(`최대 ${maxSelection}개까지만 선택할 수 있습니다.`);
+                    }
+                    updateCounter();
+                    
+                    console.log('선택된 꽃:', selectedFlowersData.map(f => f.name));
+                });
+            });
+
+            nextButton.addEventListener('click', () => {
+                // 선택된 꽃이 1개 미만이면 알림 후 함수 종료
+                if (selectedFlowersData.length < 1) {
+                    alert('최소 1개의 꽃을 선택해주세요.');
+                    return; // 함수 실행 중단
+                }
+
+                // 선택된 꽃들의 이름만 추출
+                const selectedNames = selectedFlowersData.map(f => f.name);
+
+                // **[수정]** alert 대신 페이지 이동 실행
+                // alert(`선택된 꽃: ${selectedNames.join(', ')}\n다음 단계로 진행합니다... (아직 구현이 필요합니다)`);
+
+                // **[수정]** 주석 해제 및 다음 페이지 파일명 확인 (예: bouquet_generator.html)
+                window.location.href = `bouquet_generator.html?flowers=${selectedNames.join(',')}`;
+            });
+
+            updateCounter();
+        });
+    </script>
+</body>
+</html>

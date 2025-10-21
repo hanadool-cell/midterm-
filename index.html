@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Bouquet</title>
+    
+    <link rel="stylesheet" href="https://use.typekit.net/bno4gef.css">
+
+    <style>
+        /* --- 기본 스타일 --- */
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            font-family: "pretendard", sans-serif; 
+            color: white;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* 모든 콘텐츠를 중앙에 배치 */
+        }
+        
+        /* --- 비디오 배경 설정 (HTML5 Video) --- */
+        #video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1; /* 콘텐츠 뒤에 배치 */
+            filter: brightness(0.7); /* 비디오 밝기 조정 (텍스트 대비를 위해) */
+        }
+ 
+        /* 제목 영역 */
+        #website-title {
+            text-align: center; 
+            z-index: 10; 
+            pointer-events: none;
+            /* Flexbody 중앙에 배치되므로 fixed/absolute를 제거하고 margin을 사용 */
+            margin-bottom: 5vh; 
+            position: absolute;
+            top: 10%;
+        }
+        
+        #website-title h1 { 
+            font-size: 6rem; /* 크기 유지 */
+            color: white; 
+            font-weight: 400; /* 일반 폰트 굵기 */
+            margin-bottom: 0.5vw;
+            line-height: 1.1;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* 특수 폰트 스타일 (참고 스타일의 그라데이션 및 폰트 사용) */
+        #website-title h1 .special-font { 
+            font-family: "argent-pixel-cf", sans-serif;
+            font-weight: 500;
+            font-style: italic;
+            letter-spacing: -0.2vw;
+            font-size: 6.5vw; /* 제목보다 살짝 크게 */
+            background: linear-gradient(to right, #cdff45, #5efffc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent; 
+            text-shadow: none; 
+        }
+        #website-title h1 .special-font2 { /* 괄호 */
+             font-family: "pretendard", sans-serif;
+             font-weight: 300;
+             font-style: italic;
+             letter-spacing: 0vw;
+             font-size: 6vw; /* 괄호 크기 조정 */
+         }
+
+
+        /* 버튼 영역 */
+        #button-area {
+            text-align: center; 
+            z-index: 20;
+            pointer-events: auto;
+            margin-top: 2vh;
+            position: absolute;
+            bottom: 30%;
+        }
+
+        /* 버튼 디자인 (참고 스타일의 디자인 요소 반영) */
+        #create-bouquet-btn {
+            padding: 1vw 4vw; /* 패딩 조정 */
+            font-size: 2vw; /* 폰트 크기 조정 */
+            font-family: "argent-pixel-cf", sans-serif; /* 특수 폰트 사용 */
+            font-weight: 900;
+            font-style: regular;
+            color: #cdff45;
+            background: rgba(0, 0, 0, 0.434); /* 반투명 배경 */
+            border: #cdff45 1px solid ; /* 테두리 */
+            cursor: pointer;
+            transition: background 0.3s, color 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        #create-bouquet-btn:hover { 
+            background: #cdff45; 
+            color: rgb(0, 0, 0);
+        }
+    </style>
+</head>
+<body>
+    
+    <video id="video-background" preload="auto" autoplay loop muted playsinline poster="main_poster.jpg">
+        <source src="main.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    
+    <header id="website-title">
+        <h1>
+            <span class="special-font2">(</span> 
+            <span class="special-font">DIGITAL BOUQUET  </span>
+            <span class="special-font2"> )</span>
+        </h1>
+    </header>
+
+    <div id="button-area"> 
+        <button id="create-bouquet-btn">
+            GO TO MAKE
+        </button>
+    </div>
+     <script>
+      (function(d) {
+        var config = {
+          kitId: 'bno4gef',
+          scriptTimeout: 3000,
+          async: true
+        },
+        h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+      })(document);
+    </script>
+
+    <script>
+        document.getElementById('create-bouquet-btn').addEventListener('click', () => {
+            // '꽃다발 만들기' 버튼 클릭 시 다음 페이지로 이동
+            window.location.href = 'message_select.html';
+        });
+    </script>
+</body>
+</html>

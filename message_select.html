@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Bouquet - 메시지 선택 (최종 UI)</title>
+
+    <link rel="stylesheet" href="https://use.typekit.net/bno4gef.css">
+
+    <style>
+        /* CSS: 와이어프레임 스타일 */
+        body {
+            background-image: url('gridback.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            font-family: "pretendard", sans-serif;
+            font-weight: 500;
+            font-style: normal;
+        }
+
+        /* --- 1. 메인 문구 영역 (헤더) --- */
+        #header-area {
+            background: linear-gradient(to bottom, #cdff4561, rgba(94, 255, 252, 0.204),rgba(176, 255, 65, 0));
+            width: 100%;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            height: 24vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        #header-area::after { /* 헤더 노이즈 마스크 */
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            mask-image: linear-gradient(to bottom,
+                white 0%,
+                rgba(255, 255, 255, 0.487) 30%,
+                transparent 100%
+            );
+            -webkit-mask-image: linear-gradient(to bottom,
+                white 0%,
+                rgba(255, 255, 255, 0.487) 50%,
+                transparent 100%
+            );
+            z-index: 1;
+            pointer-events: none;
+        }
+
+
+        h1 {
+            font-size: 3vw;
+            color: white;
+            
+            margin-bottom: 1.5vw;
+            margin-top: auto; 
+            position: relative;
+            z-index: 2; 
+            font-weight: 400;
+            letter-spacing: -0.01vw;
+            line-height: 1.1; 
+            text-shadow: #00000043 0 0 0.5vw;
+
+        }
+
+        h1 .special-font {
+            font-family: "argent-pixel-cf", sans-serif;
+            font-weight: 500;
+            font-style: italic;
+            letter-spacing: -0.2vw;
+            font-size: 3.5vw;
+            background: linear-gradient(to right, #cdff45, #5efffc); /* 카드 제목 호버와 동일한 그라데이션 */
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent; /* 텍스트 색상을 투명하게 */
+            text-shadow: none; /* 그림자 제거 */
+            
+        }
+        h1 .special-font2 {
+
+            font-weight: 300;
+            font-style: italic; /* 이탤릭체를 원하지 않았다면 normal로 변경하세요 */
+            letter-spacing: 0vw;
+            font-size: 3.6vw;
+        }
+
+        p {
+            font-size: 1.3vw;
+            color: white;
+            margin: 0;
+            position: relative;
+            z-index: 11; /* 헤더 마스크보다 위 */
+            opacity: 0.8;
+            font-weight: 300;
+            letter-spacing: 0.7px;
+        }
+
+
+        /* --- 2. 메인 콘텐츠 영역 (카드 래퍼) --- */
+        #main-wrapper {
+            background-image: url('gridback.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 80vh;
+            box-sizing: border-box;
+            position: relative;
+            z-index: 5;
+        }
+
+        #card-container {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            width: 100%;
+            flex: 1;
+        }
+
+        .message-card {
+            flex: 1;
+            box-sizing: border-box;
+            background-color: rgba(0, 0, 0, 0.2);
+            border: none;
+            /* **[수정]** 카드 하단 선 효과 제거 */
+            /* background-image: linear-gradient(to top, rgba(255, 255, 255, 0) 0%, rgba(208, 255, 0, 0.667) 1%, rgba(230, 255, 44, 0.4) 80%, rgba(153, 255, 0, 0) 100%); */
+            /* background-size: 0.015vw 0%; */
+            /* background-repeat: no-repeat; */
+            /* background-position: center bottom; */
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            color: white;
+            user-select: none;
+            overflow: hidden;
+            position: relative;
+            /* **[수정]** 불필요한 transition 제거 */
+            transition: none;
+        }
+
+        
+
+        
+        .message-card::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+
+            /* 배경: 그라데이션, 노이즈 */
+            background-image:
+                linear-gradient(to top, #bbff00, rgba(0, 255, 251, 0.545),rgba(232, 148, 255, 0.391), rgba(176, 255, 65, 0)),
+                url('noise.png');
+            background-size: 100% 100%, auto;
+            background-position: center, center;
+            background-repeat: no-repeat, repeat;
+
+            /* 노이즈가 그라데이션처럼 사라지도록 마스크 추가 */
+            mask-image: linear-gradient(to top,
+                white 0%,    /* 하단: 100% 보임 */
+                white 40%,    /* 40% 지점까지 100% 보임 */
+                transparent 100% /* 상단: 투명하게 사라짐 */
+            );
+            -webkit-mask-image: linear-gradient(to top,
+                white 0%,
+                white 40%,
+                transparent 100%
+            );
+
+            opacity: 0; /* 초기 투명 */
+            z-index: 0; /* 아이콘 아래 */
+            transition: height 0.8s ease-out, opacity 0.8s ease-out;
+
+             /* 마우스 이벤트 통과 */
+            pointer-events: none;
+        }
+
+        /* 카드 호버 시 가상 요소 나타남 */
+        .message-card:hover::after {
+            height: 35%;
+            opacity: 0.6;
+        }
+
+
+        .card-icon {
+            width: 80%;
+            height: 80%;
+            object-fit: contain;
+            margin-bottom: 0;
+            transition: transform 0.3s ease-out;
+            position: relative;
+            z-index: 1; /* 그라데이션/노이즈 위 */
+        }
+
+        .message-card:hover .card-icon {
+            transform: scale(1.2) translateY(-2vw);
+        }
+
+        .card-title {
+            font-size: 2vw;
+            color: white;
+            position: absolute;
+            top: 14%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2; /* 아이콘 위 */
+            white-space: nowrap;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+            transition: color 0.3s ease-out, transform 0.3s ease-out;
+        }
+
+        .message-card:hover .card-title {
+            background: linear-gradient(to right, #cdff45, #5efffc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: none;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+
+        .card-title .font-pretendard {
+            font-family: "pretendard", sans-serif;
+            font-weight: 200;
+            font-style: italic;
+            letter-spacing: -1px;
+        }
+
+        .card-title .font-argent {
+            font-family: "argent-pixel-cf", sans-serif;
+            font-weight: 400;
+            font-style: italic;
+            letter-spacing: -1px;
+        }
+
+
+        .gif-icon {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="header-area">
+        <h1>WHAT KIND OF <span class="special-font2">( </span><span class="special-font">EMOTIONS </span><span class="special-font2">) </span> <br> DO YOU WANT TO CONVEY?</h1>
+        <p>당신은 오늘, 상대방에게 어떤 마음을 상대에게 전달하고 싶나요?</p>
+    </div>
+
+    <div id="main-wrapper">
+
+        <div id="card-container">
+            <div class="message-card" data-message="사랑">
+                <img src="love/lily.png" alt="사랑" class="card-icon static-icon">
+                <img src="love/lily.gif" alt="사랑 애니메이션" class="card-icon gif-icon">
+                <span class="card-title">
+                    <span class="font-pretendard">( </span><span class="font-argent">LOVE</span><span class="font-pretendard">)</span>
+                </span>
+            </div>
+
+            <div class="message-card" data-message="감사">
+                <img src="Gratitude/SweetPea.png" alt="감사" class="card-icon static-icon">
+                <img src="Gratitude/SweetPea.gif" alt="감사 애니메이션" class="card-icon gif-icon">
+                <span class="card-title">
+                    <span class="font-pretendard">( </span><span class="font-argent">GRATITUDE</span><span class="font-pretendard">)</span>
+                </span>
+            </div>
+
+            <div class="message-card" data-message="축하">
+                <img src="Celebration/PhalaenopsisOrchid.png" alt="축하" class="card-icon static-icon">
+                <img src="Celebration/PhalaenopsisOrchid.gif" alt="축하 애니메이션" class="card-icon gif-icon">
+                <span class="card-title">
+                    <span class="font-pretendard">( </span><span class="font-argent">CELEBRATION</span><span class="font-pretendard">)</span>
+                </span>
+            </div>
+
+            <div class="message-card" data-message="응원">
+                <img src="Encouragement/Cyclamen.png" alt="응원" class="card-icon static-icon">
+                <img src="Encouragement/Cyclamen.gif" alt="응원 애니메이션" class="card-icon gif-icon">
+                <span class="card-title">
+                    <span class="font-pretendard">( </span><span class="font-argent">CHEER</span><span class="font-pretendard">)</span>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+      (function(d) {
+        var config = {
+          kitId: 'bno4gef',
+          scriptTimeout: 3000,
+          async: true
+        },
+        h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+      })(document);
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.message-card');
+
+            // --- GIF 호버 로직 ---
+            cards.forEach(card => {
+                const staticImage = card.querySelector('.static-icon');
+                const gifImage = card.querySelector('.gif-icon');
+
+                if (staticImage && gifImage) {
+                    card.addEventListener('mouseenter', () => {
+                        staticImage.style.display = 'none';  // PNG 숨기기
+                        gifImage.style.display = 'block'; // GIF 보이기
+                    });
+
+                    card.addEventListener('mouseleave', () => {
+                        staticImage.style.display = 'block'; // PNG 보이기
+                        gifImage.style.display = 'none';  // GIF 숨기기
+                    });
+                }
+            });
+
+            // --- 클릭 로직 (수정됨) ---
+            cards.forEach(card => {
+                card.addEventListener('click', (e) => {
+                    // 모든 카드에서 'selected' 클래스 제거
+                    cards.forEach(c => c.classList.remove('selected'));
+                    // 클릭된 카드에 'selected' 클래스 추가
+                    e.currentTarget.classList.add('selected');
+
+                    const selectedMessage = e.currentTarget.getAttribute('data-message');
+                    console.log(`선택된 메시지: ${selectedMessage}`);
+
+                    // **[수정]** "사랑" 카드인지 확인
+                    if (selectedMessage === '사랑') {
+                        // love.html로 이동
+                        window.location.href = 'love.html';
+                    } else {
+                        // 다른 카드일 경우 알림 표시
+                        alert(`아직 사랑만 ㅎㅎ..`);
+                        // 선택 효과를 다시 제거하려면 아래 주석 해제
+                        // e.currentTarget.classList.remove('selected');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Bouquet - 편지 쓰기</title>
+    <script>
+  (function(d) {
+    var config = {
+      kitId: 'bno4gef',
+      scriptTimeout: 3000,
+      async: true
+    },
+    h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+  })(document);
+</script>
+    <link rel="stylesheet" href="https://use.typekit.net/bno4gef.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        /* --- 기본 스타일 --- */
+        body {
+            background-image: url('gridback.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white;
+            height: 100vh;
+            margin: 0;
+            font-family: "pretendard", sans-serif;
+            font-weight: 500;
+            font-style: normal;
+            overflow: hidden;
+            position: relative;
+            display: flex; /* 좌우 분할을 위해 flex 사용 */
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30vh;
+            background:  linear-gradient(to top, #cdff453e, rgba(94, 255, 252, 0.13),rgba(176, 255, 65, 0));
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* ------------------------------------------- */
+        /* --- 1. 초기 좌우 분할 레이아웃 (시작) --- */
+        /* ------------------------------------------- */
+
+        /* --- 1. 좌측 영역 (헤더 + 완성 꽃다발) --- */
+        #left-pane {
+            width: 45vw;
+            height: 100vh;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* 헤더 위, 이미지 아래 [유지] */
+            align-items: flex-start;
+            padding: 5vh 3.5vw;
+            text-align: left;
+            z-index: 10;
+            position: relative;
+        }
+
+        #header-area {
+            width: 100%; /* 헤더가 좌측 패널 너비를 사용하도록 */
+            margin-bottom: auto; /* 이미지가 하단으로 밀리도록 */
+            transition: opacity 0.5s ease;
+        }
+        #header-area h1 {
+           font-size: 3vw;
+            color: white;
+            margin-top: 1vh;
+            margin-bottom: 1.5vw;
+            position: relative; 
+            z-index: 2;
+            font-weight: 400;
+            letter-spacing: -0.01vw;
+            line-height: 1.1;
+            text-shadow: #00000043 0 0 0.5vw;
+        }
+
+        #header-area h1 .special-font { 
+            font-family: "argent-pixel-cf", sans-serif;
+            font-weight: 500;
+            font-style: italic;
+            letter-spacing: -0.2vw;
+            font-size: 3.5vw;
+            background: linear-gradient(to right, #cdff45, #5efffc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: none;
+        }
+        #header-area h1 .special-font2 { 
+             font-family: "pretendard", sans-serif;
+             font-weight: 300;
+             font-style: italic;
+             letter-spacing: 0vw;
+             font-size: 3.2vw;
+             
+         }
+
+        #header-area p {
+            font-size: 1.3vw;
+            color: rgba(255, 255, 255, 0.8);
+            margin: 0 0 4vh 0;
+            opacity: 0.8;
+            font-weight: 300;
+            letter-spacing: 0.7px;
+        }
+        
+        /* [꽃다발 이미지 영역: 초기 크롭된 모습] */
+         #completed-bouquet-preview {
+            width: 100%; /* 좌측 패널 너비에 맞춤 */
+            height: 70vh; /* 이미지 높이 조정 */
+            border: none;
+            object-fit: contain; /* [수정] 이미지가 잘리지 않게 contain으로 변경 */
+            object-position: center top; 
+            overflow: hidden; 
+            position: relative; 
+            margin-top: 0; 
+            margin-bottom: 0; 
+            transition: all 1s ease-in-out; 
+        }
+       
+        /* --- 2. 우측 영역 (편지 쓰기) --- */
+        #right-pane {
+            width: 55vw;
+            height: 100vh;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 5vh;
+            z-index: 5;
+            position: relative;
+            transition: all 1s ease-in-out; 
+        }
+
+        /* 편지 쓰기 폼 */
+        #letter-form {
+            width: 80%;
+            height: 80%; 
+            background: linear-gradient(to top, #afdb38, #3cdcd9);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 2.5vw; 
+            box-sizing: border-box;
+            margin-bottom: 2vh;
+            transition: all 1s ease-in-out; 
+        }
+
+        /* (편지 폼 내부 스타일은 재활용됨) */
+        .letter-header {
+            display: flex;
+            align-items: center;
+            margin-left: 2vw;
+            color: rgb(7, 7, 7);
+            font-family: "argent-pixel-cf", sans-serif;
+            font-size: 2vw;
+            font-weight: 1000;
+        }
+        .letter-footer {
+            margin-top: auto; 
+            padding-top: 1vh;
+            margin-left: 2vw;
+            margin-top: 0.5vw;
+        }
+        .footer-line {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: rgb(7, 7, 7);
+            font-family: "argent-pixel-cf", sans-serif;
+            font-size: 1.9vw;
+            font-weight: 1000;
+        }
+        .name-input {
+            background-color: transparent;
+            border: none;
+            margin-left: 1vw;
+            padding-left: 0.5vw;
+            width: 20%; 
+            font-family: "pretendard", sans-serif;
+            font-size: 1.8vw;
+            font-weight: 500;
+        }
+        .name-input::placeholder {
+            color: rgba(1, 73, 0, 0.5); 
+            font-weight: 500; 
+        }
+        .name-input:focus {
+            outline: none;
+            border-bottom-color: rgba(69, 86, 65, 0.4)
+        }
+        .letter-body {
+            flex-grow: 1; 
+            width: 100%;
+            background-color: transparent;
+            position: relative;
+            padding: 1.5vw; 
+            box-sizing: border-box;
+        }
+        #letter-textarea {
+            width: 100%;
+            height: 100%; 
+            background-color: transparent; 
+            border: none; 
+            color: black;
+            font-family: "pretendard", sans-serif;
+            font-size: 1.5vw;
+            font-weight: 500;
+            padding-top: 0; 
+            padding-left: 1vw;
+            padding-right: 1vw;
+            box-sizing: border-box;
+            resize: none;
+            line-height: 3.6vw; 
+            background-image: linear-gradient(rgb(0, 0, 0) 2px, transparent 1px);
+            background-size: 100% 3.6vw;
+        }
+        #letter-textarea::placeholder {
+            color: rgba(1, 73, 0, 0.5); 
+            font-weight: 500; 
+        }
+        #letter-textarea:focus {
+            outline: none;
+            border-color: black;
+        }
+        #send-button {
+            width: 80%; 
+            padding: 1vw 5vw;
+            font-size: 2vw;
+            font-family: "argent-pixel-cf", sans-serif;
+            font-weight: 900;
+            font-style: regular;
+            color: #cdff45;
+            background: rgba(0, 0, 0, 0.434);
+            border: #cdff45 1px solid ;
+            cursor: pointer;
+            transition: all 0.3s, opacity 0.5s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 0; 
+        }
+        #send-button:hover {
+             background: #cdff45;
+             color: rgb(0, 0, 0);
+        }
+        
+        /* ------------------------------------------- */
+        /* --- 2. 최종 전송 화면 레이아웃 (새로운 CSS) --- */
+        /* ------------------------------------------- */
+        
+        #final-convey-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: transparent;
+            z-index: 20;
+            display: none; 
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s ease 0.5s; 
+        }
+        
+        .final-header {
+            transition: all 0.5s ease;
+        }
+        .final-header h1 {
+            font-size: 4vw;
+            margin: 0 0 1vw 0;
+            color: white;
+            font-weight: 400;
+            letter-spacing: 0.1vw;
+        }
+        .final-header h1 .special-font {
+            font-family: "argent-pixel-cf", sans-serif;
+            font-size: 4.5vw;
+            font-weight: 500;
+            font-style: italic;
+            background: linear-gradient(to right, #cdff45, #5efffc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .final-header p {
+            font-size: 1.5vw;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 5vh;
+        }
+        
+        .final-content-wrapper {
+            display: flex;
+            gap: 5vw;
+            align-items: center; /* [유지] 수직 중앙 정렬 */
+            height: 60vh;
+            min-height: 400px;
+            transition: all 1s ease-in-out; 
+        }
+        
+        /* [꽃다발 이미지 컨테이너 - 최종] */
+        #final-bouquet-image-container {
+            /* [수정] 꽃다발 컨테이너 너비와 높이 조절 */
+            width: 32vw; 
+            height: 105%; 
+            position: relative;
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            transform: rotate(-20deg) translateY(2vh); /* [수정] 아래로 추가 이동 */
+            transition: all 1s ease-in-out; 
+        }
+        
+        /* [최종] 이미지 자체의 스타일 (전체샷 보이게) */
+        #final-bouquet-image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain; 
+            transition: all 1s ease-in-out;
+        }
+        
+
+        /* [편지지 이미지 컨테이너 - 최종] */
+        #final-letter-image-container { 
+            /* [수정] 편지지 컨테이너 너비와 높이 조절 */
+            width: 28vw; 
+            height: 95%; 
+            background: transparent; 
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            
+            display: flex; 
+            justify-content: center;
+            align-items: center;
+
+            transition: all 1s ease-in-out;
+        }
+        #final-letter-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; 
+        }
+        
+        .final-button-group {
+            display: flex;
+            gap: 2vw;
+            margin-top: 5vh;
+            width: 65vw; 
+            max-width: 65vw;
+            justify-content: center;
+            transition: all 1s ease;
+        }
+
+        .final-button {
+            padding: 1vw 5vw;
+            font-size: 2vw;
+            font-family: "argent-pixel-cf", sans-serif;
+            font-weight: 500;
+            font-style: regular;
+            color: #cdff45;
+            background: rgba(0, 0, 0, 0.434);
+            border: #cdff45 1px solid ; /* **[수정]** 테두리 색상 명시 */
+            cursor: pointer;
+            transition: background 0.3s, color 0.3s; /* **[수정]** color 전환 추가 */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .final-button:hover {
+            background: #cdff45;
+            color: rgb(0, 0, 0);
+            border-color: #cdff45;
+            transform: translateY(-2px);
+        }
+
+        /* Typekit 로딩 */
+        .wf-loading body { visibility: hidden; }
+        .wf-active body { visibility: visible; }
+    </style>
+    
+</head>
+<body>
+    <div id="left-pane">
+        <div id="header-area">
+            <h1>WRITE A <span class="special-font2">(</span> <span class="special-font">LETTER</span><span class="special-font2">)</span> <br>WITH YOUR HEART</h1>
+            <p>마음을 담은 편지를 써보세요.</p>
+        </div>
+        
+        <img id="completed-bouquet-preview" src="" alt="완성된 꽃다발 미리보기">
+    </div>
+
+    <div id="right-pane">
+        <form id="letter-form">
+            <div class="letter-header">
+                TO.
+                <input type="text" id="recipient-name" class="name-input" placeholder="받는 이">
+            </div>
+
+            <div class="letter-body">
+                <textarea id="letter-textarea" placeholder="여기에 편지 내용을 입력하세요..."></textarea>
+            </div>
+            
+            <div class="letter-footer">
+                <div class="footer-line from"> FROM.
+                    <input type="text" id="sender-name" class="name-input" placeholder="보낸 이">
+                </div>
+                </div>
+            </form>
+        
+        <button type="submit" id="send-button">SEND</button>
+    </div>
+      
+    <div id="final-convey-screen">
+        <div class="final-header">
+            <h1>WE ARE <span class="special-font2">(</span> <span class="special-font">READY</span><span class="special-font2">)</span> TO CONVEY</h1>
+            <p>이제 모든 준비가 끝났습니다.</p>
+        </div>
+        
+        <div class="final-content-wrapper">
+            <div id="final-bouquet-image-container"></div>
+            <div id="final-letter-image-container"></div>
+        </div>
+        
+        <div class="final-button-group">
+            <button id="modify-button" class="final-button">MODIFY</button>
+            <button id="go-button" class="final-button">GO</button>
+        </div>
+    </div>
+    <script>
+      (function(d) {
+        // ... (Typekit 스크립트) ...
+      })(document);
+    </script>
+
+  <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const leftPane = document.getElementById('left-pane');
+            const rightPane = document.getElementById('right-pane');
+            const bouquetPreviewImg = document.getElementById('completed-bouquet-preview');
+            const letterForm = document.getElementById('letter-form');
+            const sendButton = document.getElementById('send-button');
+            const headerArea = document.getElementById('header-area');
+            const letterTextarea = document.getElementById('letter-textarea'); 
+            const recipientInput = document.getElementById('recipient-name');
+            const senderInput = document.getElementById('sender-name');
+
+
+            // [추가] 최종 화면 요소 참조
+            const finalScreen = document.getElementById('final-convey-screen');
+            const finalBouquetContainer = document.getElementById('final-bouquet-image-container');
+            const finalLetterContainer = document.getElementById('final-letter-image-container');
+            
+            // 1. sessionStorage에서 **데이터** 가져오기
+            const dataString = sessionStorage.getItem('completedBouquetData');
+            
+            if (!dataString) {
+                alert("꽃다발 데이터를 불러오지 못했습니다. 꽃 선택 페이지로 돌아갑니다.");
+                window.location.href = "love.html";
+                return;
+            }
+
+            // 2. 임시 컨테이너 생성 (이전과 동일)
+            const captureContainer = document.createElement('div');
+            Object.assign(captureContainer.style, {
+                width: "55vw", height: "90vh", position: "absolute",
+                left: "-9999px", top: "-9999px",
+                backgroundColor: "transparent", 
+                overflow: "hidden", zIndex: "-1"});
+                
+            document.body.appendChild(captureContainer);
+
+            // 3. 포장지/꽃 영역 DOM 생성 (이전과 동일)
+            const bouquetBack = document.createElement('img');
+            bouquetBack.src = "bouquetbb.png"; 
+            Object.assign(bouquetBack.style, {
+                position: "absolute", bottom: "1vh", left: "45%", transform: "translateX(-50%)",
+                width: "auto", height: '98%', zIndex: "1"
+            });
+
+            const flowerArea = document.createElement('div');
+            Object.assign(flowerArea.style, {
+                position: "absolute", top: "6%", left: "7%", width: "74%", height: "60%",
+                zIndex: "2", clipPath: "polygon(0% 0%, 100% 0%, 68% 100%,32% 100%)"
+            });
+
+            const bouquetFront = document.createElement('img');
+            bouquetFront.src = "bouquetff.png"; 
+            Object.assign(bouquetFront.style, {
+                position: "absolute", bottom: "1vh", left: "45%", transform: "translateX(-50%)",
+                width: "auto", height: "70%", zIndex: "3"
+            });
+
+            captureContainer.appendChild(bouquetBack);
+            captureContainer.appendChild(flowerArea);
+            captureContainer.appendChild(bouquetFront);
+
+
+            // 4. 저장된 데이터로 꽃 재구성 (이전과 동일)
+            const bouquetData = JSON.parse(dataString);
+            bouquetData.forEach(flower => {
+                const flowerDiv = document.createElement('img');
+                flowerDiv.src = flower.imgSrc;
+                flowerDiv.alt = flower.alt;
+                Object.assign(flowerDiv.style, {
+                    position: "absolute",
+                    width: flower.width,
+                    height: "auto",
+                    zIndex: flower.zIndex,
+                    transform: flower.transform,
+                    filter: "drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.6))"
+                });
+                flowerArea.appendChild(flowerDiv);
+            });
+
+            // 5. html2canvas로 캡처 (초기 이미지)
+            setTimeout(() => {
+                html2canvas(captureContainer, {
+                    useCORS: true,
+                    backgroundColor: null,
+                    width: captureContainer.offsetWidth,
+                    height: captureContainer.offsetHeight
+                }).then(canvas => {
+                    const imageDataURL = canvas.toDataURL('image/png');
+                    bouquetPreviewImg.src = imageDataURL;
+                    
+                    // 초기: 크기 및 회전 설정 (좌측 정렬을 위해 transform 초기화)
+                    bouquetPreviewImg.style.width = '100%';
+                    bouquetPreviewImg.style.height = '100%'; 
+                    bouquetPreviewImg.style.objectFit = 'contain'; 
+                    bouquetPreviewImg.style.transform = 'none'; 
+                    bouquetPreviewImg.style.transformOrigin = 'center center'; 
+
+                    document.body.removeChild(captureContainer); 
+                }).catch(err => {
+                    console.error("꽃다발 이미지 생성 실패:", err);
+                    bouquetPreviewImg.alt = "꽃다발 이미지를 불러오는데 실패했습니다.";
+                    document.body.removeChild(captureContainer);
+                });
+            }, 500); 
+
+
+            // 6. 폼 전송 (SEND 버튼) 로직 - 최종 화면 전환 로직
+           sendButton.addEventListener('click', (e) => { 
+                e.preventDefault(); 
+                
+                const recipientName = recipientInput.value; 
+                const senderName = senderInput.value; 
+                const letterContent = letterTextarea.value;
+                
+                if (!letterContent || !recipientName || !senderName) {
+                    alert('모든 항목 (To, From, 편지 내용)을 입력해주세요.');
+                    return;
+                }
+
+               sendButton.textContent = "..."; // 상태 변경
+                sendButton.disabled = true;
+                
+            
+                // ----------------------------------------------------
+                // [STEP 1: 편지지 영역 캡처 (안정화 로직 유지)]
+                // ----------------------------------------------------
+                
+                // 캡처 전에 스크롤을 맨 위로 이동하여 텍스트 잘림 방지
+                letterTextarea.scrollTop = 0; 
+                
+                // 캡처 직전, 렌더링 안정화를 위한 임시 스타일 저장 및 변경
+                const allInputs = letterForm.querySelectorAll('input'); 
+                const originalTextareaPadding = letterTextarea.style.paddingTop;
+                
+                // 텍스트 영역의 상단 패딩을 임시로 늘려서 텍스트 시작점을 아래로 내립니다.
+                letterTextarea.style.paddingTop = '0.5vw'; 
+                
+                const originalStyles = [];
+                allInputs.forEach(input => {
+                    originalStyles.push({
+                        element: input,
+                        borderBottom: input.style.borderBottom,
+                        readOnly: input.readOnly
+                    });
+                    
+                    // TO/FROM input의 밑줄을 제거하고 읽기 전용으로 전환
+                    input.style.borderBottom = 'none'; 
+                    input.readOnly = true; 
+                });
+
+                // 캡처 정확도를 위한 배경/오버플로우 임시 설정
+                const originalFormBackground = letterForm.style.background;
+                const originalFormOverflow = letterForm.style.overflow;
+                letterForm.style.background = 'linear-gradient(to top, #afdb38, #3cdcd9)'; 
+                letterForm.style.overflow = 'hidden'; 
+                
+                
+                // Promise를 사용하여 html2canvas가 완료될 때까지 기다립니다.
+                html2canvas(letterForm, { // 원본 폼을 직접 캡처 대상으로 사용
+                    useCORS: true,
+                    backgroundColor: null 
+                }).then(canvas => {
+                    const letterImageDataURL = canvas.toDataURL('image/png');
+                    
+                    // 캡처 후 원본 스타일 복원
+                    letterTextarea.style.paddingTop = originalTextareaPadding; // 패딩 복원
+                    letterForm.style.background = originalFormBackground;
+                    letterForm.style.overflow = originalFormOverflow;
+                    
+                    originalStyles.forEach(item => {
+                         item.element.style.borderBottom = item.borderBottom; // 밑줄 복원
+                         item.element.readOnly = item.readOnly;
+                    });
+                    
+                    // ----------------------------------------------------
+                    // [STEP 2: 이미지 데이터 세션 스토리지에 저장]
+                    // ----------------------------------------------------
+                    
+                    const finalBouquetImageURL = bouquetPreviewImg.src;
+                    sessionStorage.setItem('finalBouquetImageURL', finalBouquetImageURL);
+                    sessionStorage.setItem('capturedLetterImageURL', letterImageDataURL); // 편지 이미지 저장
+
+                    
+                    // ----------------------------------------------------
+                    // [STEP 3: 최종 화면으로 모핑 및 이동]
+                    // ----------------------------------------------------
+                    
+                    // (이전 모핑 로직은 유지하고, 최종 버튼 클릭 시 email_send.html로 연결)
+                    
+                    // 꽃다발 이미지 이동 및 최종 스타일 적용 (모핑 시작)
+                    finalBouquetContainer.appendChild(bouquetPreviewImg);
+                    bouquetPreviewImg.style.width = '100%';
+                    bouquetPreviewImg.style.height = '100%';
+                    bouquetPreviewImg.style.objectFit = 'contain';
+                    bouquetPreviewImg.style.transform = 'none'; 
+
+                    // 캡처된 편지 이미지 생성 및 이동 (이메일 페이지에서는 사용하지 않지만, 흐름상 캡처 완료)
+                    const letterImage = document.createElement('img');
+                    letterImage.src = letterImageDataURL;
+                    letterImage.alt = "작성된 편지";
+                    letterImage.style.transform = 'translateY(1vh)'; 
+                    finalLetterContainer.appendChild(letterImage);
+
+                    // 최종 화면을 보이게 설정 (애니메이션 시작)
+                    finalScreen.style.display = 'flex';
+                    
+                    setTimeout(() => {
+                        
+                        // 기존 요소 숨기기
+                        leftPane.style.opacity = 0; 
+                        rightPane.style.opacity = 0; 
+                        
+                        // 최종 화면 나타나게 설정
+                        finalScreen.style.opacity = 1;
+                        
+                    }, 10); 
+
+                    // ----------------------------------------------------
+                    // [STEP 4: 버튼 기능 재정의]
+                    // ----------------------------------------------------
+                    
+                    const modifyButton = document.getElementById('modify-button');
+                    const goButton = document.getElementById('go-button');
+                    
+                    sendButton.textContent = "SEND";
+                    sendButton.disabled = false;
+
+                    modifyButton.onclick = () => {
+                        window.location.reload(); 
+                    };
+                    
+                    // [핵심]: GO 버튼을 email_send.html로 연결
+                    goButton.onclick = () => {
+                       window.location.href = "delivery.html"; 
+                    };
+
+                }).catch(err => {
+                    console.error("편지지 캡처 실패:", err);
+                    sendButton.textContent = "SEND ERROR";
+                    sendButton.disabled = false;
+                    alert("편지 캡처 중 오류가 발생했습니다. 콘솔을 확인해주세요.");
+                });
+            });
+            
+            letterForm.addEventListener('submit', (f) => {
+                f.preventDefault(); 
+            });
+        });
+        // write_letter.html의 sendButton.addEventListener('click', ...) 내부, 
+// 캡처 시작 전 유효성 검사 직후에 추가
+
+// [추가 안정화] senderName이 비어있을 경우를 대비하여 저장
+sessionStorage.setItem('senderName', senderInput.value);
+    </script>
+</body>
+</html>
